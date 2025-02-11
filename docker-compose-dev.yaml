@@ -1,0 +1,75 @@
+version: '2'
+services:
+
+    nginx:
+        container_name: nginx
+        image: nginx:1.17
+        restart: always
+        ports:
+            - "9999:80"
+        volumes:
+            - ../:/var/www
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+        links:
+            - php
+    php:
+        container_name: php
+        build:
+            context: .
+            dockerfile: Dockerfile
+        restart: always
+        volumes:
+            - ../:/var/www
+            - ./php-config/php.ini:/usr/local/etc/php/php.ini
+
+    composer:
+        container_name: composer
+        image: composer:1.9.0
+        command: tail -f /dev/null
+        volumes:
+            - ../:/var/www
+
+    mysql:
+        container_name: mysql
+        image: mysql:5.7
+        command: mysqld --max-allowed-packet=64M --character-set-server=utf8 --collation-server=utf8_unicode_ci --init-connect='SET NAMES UTF8;' --innodb-flush-log-at-trx-commit=0
+        volumes:
+            # Mount mysl data directory to keep it perisstent on host system.
+            # Use this only in development environment
+            # Mysql cannot write to data folder as it is owned by user on host.
+            # So chown 999:999 data folder when it is first created
+            # Todo: For some reason we are not able to mount log directory from host to mysql container. We need to fix this in future so that we can better manage mysql logs from host machine - Harsha
+            #- ~/storage/mysql/log:/var/log/mysql
+            - ~/storage/mysql/data:/var/lib/mysql
+
+        environment:
+            - "MYSQL_ROOT_PASSWORD=LSJW89KSLlsw8wj8SLJS"
+            - "MYSQL_DATABASE=news-aggregator"
+            - "MYSQL_USER=cmp"
+            - "MYSQL_PASSWORD=a8sJS8WJS8sjsm"
+        # ports:
+        #    - "3306:3306"
+
+    phpmyadmin:
+        container_name: phpmyadmin
+        image: phpmyadmin/phpmyadmin
+        restart: always
+        environment:
+            - PMA_HOST=mysql
+            - PMA_PORT=3306
+        ports:
+            - 8000:80
+        volumes:
+            - /sessions
+    minio:
+        container_name: minio
+        image: minio/minio
+        restart: always
+        ports:
+            - 9011:9000
+        command: server /data
+        environment:
+            - MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLPT
+            - MINIO_SECRET_KEY=WSCKHFMJGULROLQSGIWJN
+        volumes:
+            - ~/storage/minio:/data
