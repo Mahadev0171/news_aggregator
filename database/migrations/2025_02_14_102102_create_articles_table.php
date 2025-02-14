@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('articles', function (Blueprint $table) {
             $table->id();
+            $table->string('source');  // NewsAPI, OpenNews, or The Guardian
             $table->string('title');
-            $table->text('content');
-            $table->string('author')->nullable();
-            $table->string('source_name');
+            $table->string('description');
             $table->string('url');
-            $table->string('image')->nullable();
+            $table->string('url_to_image')->nullable();
+            $table->text('content')->nullable();
             $table->timestamp('published_at');
             $table->timestamps();
         });

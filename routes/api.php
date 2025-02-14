@@ -29,3 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::get('/articles', [ArticleController::class, 'index']);
 Route::get('/articles/{id}', [ArticleController::class, 'show']);
+
+Route::post('/user/preferences', [UserPreferenceController::class, 'update']);
+Route::get('/user/preferences', [UserPreferenceController::class, 'show']);
+Route::get('/user/feed', [PersonalizedFeedController::class, 'index']);
