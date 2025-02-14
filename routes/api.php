@@ -26,3 +26,6 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json($request->user());
     });
 });
+
+Route::get('/articles', [ArticleController::class, 'index']);
+Route::get('/articles/{id}', [ArticleController::class, 'show']);
