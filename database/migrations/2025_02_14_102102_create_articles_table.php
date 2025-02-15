@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('source');  // NewsAPI, OpenNews, or The Guardian
             $table->string('title');
             $table->string('description');
+            $table->string('category');
             $table->string('url');
             $table->string('url_to_image')->nullable();
             $table->text('content')->nullable();

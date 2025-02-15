@@ -4,21 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\UserPreference;
+use App\Models\User;
 
 class PersonalizedFeedController extends Controller
 {
     public function index()
     {
-        $preferences = auth()->user()->preferences;
+        $user = User::find(2);
+        $preferences['source'] = UserPreference::get('preferred_sources')->where('user_id',$user->id);
+        $preferences['category'] = UserPreference::get('preferred_categories')->where('user_id',$user->id);
         $query = Article::query();
 
         if ($preferences) {
-            if ($preferences->preferred_sources) {
-                $query->whereIn('source_name', $preferences->preferred_sources);
+            if ($preferences['source']) {
+                $query->whereIn('source', $preferences['source']);
             }
-            if ($preferences->preferred_categories) {
+            if ($preferences['category']) {
                 // Assuming articles have categories
-                $query->whereIn('category', $preferences->preferred_categories);
+                $query->whereIn('category', $preferences['category']);
             }
         }
 

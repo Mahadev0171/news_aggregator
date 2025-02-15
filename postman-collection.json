@@ -1,0 +1,225 @@
+openapi: 3.0.0
+info:
+  title: news-aggregator
+  version: 1.0.0
+servers:
+  - url: http://localhost:9999
+components:
+  securitySchemes:
+    noauthAuth:
+      type: http
+      scheme: noauth
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags:
+  - name: User Authentication
+  - name: Article Management
+  - name: User Preferences
+paths:
+  /api/register/:
+    post:
+      tags:
+        - User Authentication
+      summary: user-register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Mahadeva Gowda
+                email: maha.gowda0171@gmail.com
+                password: password
+                password_confirmation: password
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: X-XSRF-TOKEN
+          in: header
+          schema:
+            type: string
+          example: >-
+            gvt/7Xbr5eR6NLOqIUTmn4TRZaohCa1iiLXuvBHc1ymwRQE93F2K+1ovkv3y+ktw9XQbynEWmKd+tQUq2KmQ+3hX+k2OsuoDTN0Gb/5defozxg0yrKmnRffNdPNvlvjg
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/login/:
+    post:
+      tags:
+        - User Authentication
+      summary: user-login
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\n    \"email\": \"maha.gowda0171@gmail.com\",\n   
+                \"password\": \"password\"\n}\n"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/logout:
+    post:
+      tags:
+        - User Authentication
+      summary: user-logout
+      requestBody:
+        content: {}
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/articles:
+    get:
+      tags:
+        - Article Management
+      summary: fetch-articles
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: search
+          in: query
+          schema:
+            type: string
+          example: sports
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/articles/3:
+    get:
+      tags:
+        - Article Management
+      summary: get-article-details
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/user/preferences:
+    post:
+      tags:
+        - User Preferences
+      summary: update-user-preferences
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\n    \"user_id\": 2,\n    \"preferred_sources\":
+                [\"TechCrunch\", \"BBC\"],\n    \"preferred_categories\":
+                [\"Technology\", \"Science\"]\n}\n"
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - User Preferences
+      summary: show-user-preferences
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /api/user/feed:
+    get:
+      tags:
+        - User Preferences
+      summary: get-personalized-newsfeed
+      parameters:
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
